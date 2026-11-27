@@ -32,7 +32,7 @@ Predict([1 0]) = 1.000000
 Predict([1 1]) = 1.000000
 
 Starting Training of Logical NOT
-After iteration 3 - Weights: [0 1]
-Predict([0]) = -1.000000
-Predict([1]) = 1.000000
+After iteration 3 - Weights: [1 -1]
+Predict([0]) = 1.000000
+Predict([1]) = -1.000000
 ```

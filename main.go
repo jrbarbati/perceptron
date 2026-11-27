@@ -32,7 +32,7 @@ func trainAndPredictLogicalAnd() int {
 		-1, -1, -1, 1,
 	}
 
-	return train(trainingData, expectedOutputs, 2)
+	return trainAndPredict(trainingData, expectedOutputs, 2)
 }
 
 func trainAndPredictLogicalOr() int {
@@ -49,7 +49,7 @@ func trainAndPredictLogicalOr() int {
 		-1, 1, 1, 1,
 	}
 
-	return train(trainingData, expectedOutputs, 2)
+	return trainAndPredict(trainingData, expectedOutputs, 2)
 }
 
 func trainAndPredictLogicalNot() int {
@@ -61,13 +61,13 @@ func trainAndPredictLogicalNot() int {
 	}
 
 	expectedOutputs := []float64{
-		-1, 1,
+		1, -1,
 	}
 
-	return train(trainingData, expectedOutputs, 1)
+	return trainAndPredict(trainingData, expectedOutputs, 1)
 }
 
-func train(data [][]float64, expectations []float64, numInputs int) int {
+func trainAndPredict(data [][]float64, expectations []float64, numInputs int) int {
 	p := New(numInputs)
 
 	trainErr := p.Train(data, expectations)
