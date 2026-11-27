@@ -1,8 +1,29 @@
 from typing import List
 
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_iris, load_breast_cancer
 
 from perceptron import Perceptron
+
+
+def _find(data: List, op) -> List:
+    result = []
+
+    for datum in data:
+        for i, value in enumerate(datum):
+            if len(result) < i + 1:
+                result.append(value)
+
+            result[i] = op(value, result[i])
+
+    return result
+
+
+def _find_minimums(data: List) -> List:
+    return _find(data, min)
+
+
+def _find_maximums(data: List) -> List:
+    return _find(data, max)
 
 
 def train_and_predict(data: List[List[float | int]], expectations: List[float | int], num_inputs: int = 2, test_data: List | None = None, test_expectations: List | None = None) -> None:
@@ -90,6 +111,42 @@ def train_and_predict_iris():
     )
 
 
+def train_and_predict_breast_cancer():
+    print("Training breast cancer")
+
+    breast_cancer = load_breast_cancer()
+    x = breast_cancer.data
+    y = [-1 if y == 0 else 1 for y in (breast_cancer.target == 0).astype(int)]
+
+    training_data = [x_i.tolist() for x_i in x[:100]]
+    expectations = y[:100]
+
+    mins = _find_minimums(training_data)
+    maxes = _find_maximums(training_data)
+
+    # Normalize training data to reduce epochs
+    training_data = [
+        [(x_i_j-min_) / (max_-min_) for x_i_j, min_, max_ in zip(x_i, mins, maxes)]
+        for x_i in training_data
+    ]
+
+    testing_data = [x_i.tolist() for x_i in x[100:]]
+    # Normalize testing data using the mins and maxes from training so as not to leak testing information into the training set
+    testing_data = [
+        [(x_i_j - min_) / (max_ - min_) for x_i_j, min_, max_ in zip(x_i, mins, maxes)]
+        for x_i in testing_data
+    ]
+    test_expectations = y[100:]
+
+    train_and_predict(
+        training_data,
+        expectations,
+        num_inputs=30,
+        test_data=testing_data,
+        test_expectations=test_expectations
+    )
+
+
 def main():
     train_and_predict_logical_and()
     print()
@@ -98,6 +155,8 @@ def main():
     train_and_predict_logical_not()
     print()
     train_and_predict_iris()
+    print()
+    train_and_predict_breast_cancer()
 
 
 if __name__ == "__main__":
