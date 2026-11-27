@@ -89,6 +89,7 @@ func (p *Perceptron) Predict(input []float64) (float64, error) {
 	return -1.0, nil
 }
 
+// updateWeights performs the w(new) = w(old) + yx calculation
 func (p *Perceptron) updateWeights(output float64, inputs []float64) {
 	for i := range p.Weights {
 		p.Weights[i] += output * inputs[i]
